@@ -1,5 +1,6 @@
 const food = require('./modules/foodstuff.js');
 const HW = require('./modules/HW.js');
+const plan = require('./modules/plan.js');
 
 let args = process.argv;
 args.splice(0,2);
@@ -22,5 +23,16 @@ switch(args[0]){
     case('echo'):
         console.log(args[1]);
         break;
-
+    case('plan'):
+        async function t(mode){
+            let answer = await plan.getplan(mode);
+            console.log(answer);
+        };
+        if (args[1]!= undefined){
+            t(args[1]);
+        }else{
+            t('get');
+        };
+        break;
+        
 };

@@ -14,7 +14,9 @@
     "fetch": "^1.1.0",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
-    "wait.for-es6": "^0.1.0"
+    "node-html-to-image": "^1.1.0",
+    "wait.for-es6": "^0.1.0",
+    "xlsx": "^0.15.4"
   },
   "devDependencies": {},
   "repository": {
