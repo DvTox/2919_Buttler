@@ -2,31 +2,39 @@ const fetch = require('node-fetch');
 const dotenv = require('dotenv').config({ path:'config/env/.env'});
 
 let menu = [];
+let foodTime = [];
+let n = 0;
+let foodDay = 0;
 function foodProcessing(rawfood,modeselec){
 
     let now_jso = new Date().toJSON().slice(0,10);
     let now = new Date();
-    
-    
-    
+
+
     // console.log(rawfood);
     // let jfood = JSON.parse(rawfood);
     console.log(modeselec);   
 
-    if(modeselec == '0' || modeselec == 'udf'){
+    switch(modeselec){
+case '0':
+case'udf':
 
                 //console.log('got here');
         menu = [];
+	
         for (let x in rawfood){
 
-            let foodTime = rawfood[x].datum.slice(0,10);
+            foodTime[n] = rawfood[x].datum.slice(0,10);
 
-            if (foodTime == now_jso){
+            if (foodTime[n] == now_jso){
 
                 menu.push(rawfood[x].gerichtname.trim());
+		n++;
             }
         }
-    }else if(modeselec == '1'){
+	break;
+
+    case '1':
 
         menu = [];
         let datearr = [];
@@ -44,44 +52,62 @@ function foodProcessing(rawfood,modeselec){
             datearr.push(now.toJSON().slice(0, 10))
             now.setDate(now.getDate() +1);
         }
-
-        let foodDay = 0;
+	    
+        
+	    
         for (let x in rawfood){
 
-            let foodTime = rawfood[x].datum.slice(0,10);
 
-            if (datearr.indexOf(foodTime) > -1){
+            foodTime[n] = rawfood[x].datum.slice(0,10);
 
-                menu.push(`${foodTime}|${rawfood[x].gerichtname.trim()}`);
+            if (datearr.indexOf(foodTime[n]) > -1){
+
+              menu.push(`${foodTime[n]}|${rawfood[x].gerichtname.trim()}`);
+		      n++;
 
             }
 
         }
         menu = menu.sort(function(a,b){
-            
+
             aDate=Date.parse(a.split('|')[0]);
-            
+
             bDate=Date.parse(b.split('|')[0]);
 
             return aDate-bDate;
         })
-        console.log(menu.length)
-
+        console.log(menu.length);
+	menu = dashes(menu);
+/*
             //Dash per day
             let menuLength=menu.length;
+
+		for (let e = 0; e<=menuLength; e++){
+
+		    aDate=Date.parse(menu[e].split('|')[0]);
+	            bDate=Date.parse(menu[e+1].split('|')[0]);
+		    if (aDate != bDate) {
+			menu.splice(e+1,0,`-----------------------------------------------`);
+			e++;
+}
+
+		}
+/*
             for (let n = 3; n<=menuLength;n+=4){    
                 console.log(n)
                 menu.splice(n,0,`----------------------------------------------`);
             }
+*/
             console.log("after for")
             // /Dash per day
-
-    }else if(modeselec == '2'){
-    	let foodDay = 0;
+	break;
+    case '2':
+	   
         menu = [];
             for (let x in rawfood){
-                let foodTime = rawfood[x].datum.slice(0,10);
-                menu.push(`${foodTime}|${rawfood[x].gerichtname.trim()}`);
+                foodTime[n] = rawfood[x].datum.slice(0,10);
+                menu.push(`${foodTime[n]}|${rawfood[x].gerichtname.trim()}`);
+		n++;
             }
             menu = menu.sort(function(a,b){
             
@@ -91,19 +117,36 @@ function foodProcessing(rawfood,modeselec){
 
             return aDate-bDate;
         })
-                    
                             //Dash per day
+	   menu = dashes(menu);
+/*
                 for (let n = 3; n<menu.length;n+=4){    
                     console.log("test2")
                     menu.splice(n,0,`----------------------------------------------`);
-                }
+                }*/
                 // /Dash per day
-    }else{
-        menu = 'No food Found'
-    }
+    break;
+    default:
+        menu = 'Mode not Found'
+	}
     return menu;
 };
 
+function dashes(menu){
+let menuLength=menu.length;
+	for (let e = 0; e<=menuLength; e++){
+
+		aDate=Date.parse(menu[e].split('|')[0]);
+
+                bDate=Date.parse(menu[e+1].split('|')[0]);
+                if (aDate != bDate) {
+                	menu.splice(e+1,0,`-----------------------------------------------`);
+                       	e++;
+		}
+
+       }
+return menu;
+}
 
 
 exports.sendforfood = async function(modeselec){
