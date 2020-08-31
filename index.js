@@ -4,6 +4,13 @@ const food = require('./modules/foodstuff.js');
 const HW = require('./modules/HW.js');
 const plan = require('./modules/plan.js');
 
+function getAllIndexes(arr, val) {
+    var indexes = [], i = -1;
+    while ((i = arr.indexOf(val, i+1)) != -1){
+        indexes.push(i);
+    }
+    return indexes;
+}
 
 //const foodservice = require('./foodservice.js');
 const bot = new discord.Client();
@@ -29,8 +36,16 @@ bot.on('message', msg => {
                	let sfood = await food.sendforfood(modeselec);
                 console.log(sfood);
                 if(sfood != []){
+			         if(modeselec == 2){
+                        console.log(sfood)
+			            sfoodIndex = getAllIndexes(sfood, `-----------------------------------------------`)
+            
+                        for (i=0;i-1<sfoodIndex.length;i++){
+                            temparray = sfood.slice(sfoodIndex[i-1],sfoodIndex[i]);
+                            msg.channel.send(temparray);
+                        }
 
-                    msg.channel.send(sfood);           
+                    }else{msg.channel.send(sfood);}
                     console.log(`sending food ......`);
                 } else{
                     msg.channel.send('sorry no Food found')
