@@ -3,6 +3,7 @@ const dotenv = require('dotenv').config({ path:'config/env/.env'});
 const food = require('./modules/foodstuff.js');
 const HW = require('./modules/HW.js');
 const plan = require('./modules/plan.js');
+const xkcd = require('./modules/xkcd.js');
 
 function getAllIndexes(arr, val) {
     var indexes = [], i = -1;
@@ -87,8 +88,33 @@ bot.on('message', msg => {
             .catch(console.error)
         };
         break;
-    };
+        case('xkcd'):
 
-});
+            async function XKCD(args){
+            let xkcdJson;
+            if (args[1] == undefined){
+                xkcdJSON = await xkcd.getXKCD(true, 0);
+            }else if(args[1]){
+                 xkcdJSON = await xkcd.getXKCD(false, args[1]);
+            }
+            if (xkcdJSON == "ERROR"){
+                msg.channel.send("Sorry Can't find!")
+                return;
+            }
+
+
+            let xkcdans = new discord.MessageEmbed()
+                .setTitle(xkcdJSON.safe_title)
+                .setURL("https://xkcd.com/"+xkcdJSON.num)
+                .setImage(xkcdJSON.img)
+                .setDescription(xkcdJSON.alt);
+            
+            msg.channel.send(xkcdans);
+             };
+             XKCD(args)
+             break;
+     } ;
+
+ } );
 
 bot.login(Token);

@@ -1,6 +1,7 @@
 const food = require('./modules/foodstuff.js');
 const HW = require('./modules/HW.js');
 const plan = require('./modules/plan.js');
+const xkcd = require('./modules/xkcd.js');
 
 let args = process.argv;
 args.splice(0,2);
@@ -35,4 +36,18 @@ switch(args[0]){
         };
         break;
         
+    case('xkcd'):
+    let xkcdJSON;
+    if (args[1] == undefined){
+        xkcdJSON = xkcd.getXKCD(true, 0);
+    }else if(args[1]){
+        xkcdJSON = xkcd.getXKCD(false, args[1]);
+    }
+    const xkcdans = new Discord.MessageEmbed()
+    .setTitle(xkcdJSON.safe_title)
+    .setURL("https://xkcd.com/"+xkcdJSON.num)
+    .setImage(xkcdJSON.img)
+    .setDescription(xkcdJSON.alt);
+msg.channel.send(xkcdans)
+
 };
